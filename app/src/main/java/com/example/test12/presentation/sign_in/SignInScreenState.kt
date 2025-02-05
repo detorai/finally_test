@@ -5,5 +5,6 @@ data class SignInScreenState (
     val password: String = "",
     var Error: String? = null,
     var isSignIn: Boolean = false,
-    var isLoading: Boolean = false
+    var isLoading: Boolean = false,
+    var passwordVisible: Boolean = false,
 )

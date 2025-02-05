@@ -24,9 +24,14 @@ class SignInViewModel: ScreenModel {
             it.copy(password = password)
         }
     }
+    fun onPasswordVis(){
+        state.update {
+            it.copy(passwordVisible = !it.passwordVisible)
+        }
+    }
     fun resetError(){
         state.update {
-            it.copy(Error = "")
+            it.copy(Error = null)
         }
     }
     fun checkEmailEmpty(email: String): Boolean{
