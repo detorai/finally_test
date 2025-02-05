@@ -16,14 +16,20 @@ class ExampleUnitTest {
 
     @Test
     fun checkEmailEmpty(){
+        assert(
         viewModel.checkEmailEmpty("123@123.com")
+        )
     }
     @Test
     fun checkPasswordEmpty(){
+        assert(
         viewModel.checkPasswordEmpty("123")
+        )
     }
     @Test
     fun checkEmailPattern(){
+        assert(
         viewModel.checkEmailPattern("123@123.com")
+        )
     }
 }
