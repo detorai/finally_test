@@ -11,7 +11,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.room.Room
 import cafe.adriel.voyager.navigator.Navigator
+import com.example.test12.data.local_data_source.AppDatabase
+import com.example.test12.presentation.home.HomeScreen
 import com.example.test12.presentation.sign_in.SignInScreen
 import com.example.test12.presentation.ui.theme.Test12Theme
 
@@ -19,9 +22,13 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        val db = Room.databaseBuilder(
+            applicationContext,
+            AppDatabase::class.java, "MatuleDatabase"
+        ).build()
         setContent {
             Test12Theme {
-                Navigator(SignInScreen())
+                Navigator(HomeScreen(db))
             }
         }
     }

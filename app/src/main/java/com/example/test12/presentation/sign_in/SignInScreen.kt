@@ -34,6 +34,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.example.test12.R
+import com.example.test12.data.local_data_source.AppDatabase
 import com.example.test12.presentation.common.CommonButton
 import com.example.test12.presentation.common.CommonClickableSign
 import com.example.test12.presentation.common.CommonDialogError
@@ -46,7 +47,7 @@ import com.example.test12.presentation.ui.theme.Block
 import com.example.test12.presentation.ui.theme.SubTextDark
 import com.example.test12.presentation.ui.theme.Typography
 
-class SignInScreen: Screen {
+data class SignInScreen(private val db: AppDatabase): Screen {
     @Composable
     override fun Content() {
         val viewModel = rememberScreenModel { SignInViewModel() }
@@ -58,7 +59,7 @@ class SignInScreen: Screen {
         val state = viewModel.state.collectAsState().value
         val navigator = LocalNavigator.currentOrThrow
         LaunchedEffect(state.isSignIn) {
-            if (state.isSignIn) navigator.push(HomeScreen())
+            if (state.isSignIn) navigator.push(HomeScreen(db))
         }
         Column(
             verticalArrangement = Arrangement.SpaceBetween,

@@ -1,22 +1,103 @@
 package com.example.test12.presentation.home
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.Navigator
+import cafe.adriel.voyager.navigator.currentOrThrow
+import com.example.test12.data.local_data_source.AppDatabase
+import com.example.test12.presentation.common.CommonBottomBar
+import com.example.test12.presentation.common.CommonCategoryRow
+import com.example.test12.presentation.common.CommonHomeTopBar
+import com.example.test12.presentation.common.CommonPopularRow
+import com.example.test12.presentation.common.CommonSalesRow
+import com.example.test12.presentation.common.CommonScaffold
+import com.example.test12.presentation.common.CommonSearchRow
+import com.example.test12.presentation.secondary_sreen.ScreenType
+import com.example.test12.presentation.secondary_sreen.SecondaryScreen
 import com.example.test12.presentation.ui.theme.Background
+import com.example.test12.presentation.ui.theme.Block
 
-class HomeScreen: Screen {
+data class HomeScreen(private val db: AppDatabase): Screen {
     @Composable
     override fun Content() {
-        Home()
+        val viewModel = rememberScreenModel { HomeViewModel(db) }
+        val navigator = LocalNavigator.currentOrThrow
+        CommonScaffold(
+            topBar = {
+                CommonHomeTopBar()
+            },
+            content = {
+                Home(
+                    navigator = navigator,
+                    viewModel = viewModel,
+                    db = db,
+                    modifier = Modifier.padding(PaddingValues(top = 111.dp))
+                    )
+            },
+            bottomBar = {
+                CommonBottomBar(
+                    onClickBucket = {},
+                    onClickFavour = {
+                        navigator.push(SecondaryScreen(ScreenType.FAVOURITE, db = db))
+                    },
+                    onClickHome = {}
+                )
+            }
+        )
     }
+
     @Composable
-    fun Home(){
+    fun Home(
+        navigator: Navigator,
+        viewModel: HomeViewModel,
+        db: AppDatabase,
+        modifier: Modifier
+    ) {
+        val state = viewModel.state.collectAsState().value
         Column(
-            modifier = Modifier.fillMaxSize().background(Background)
-        ) {  }
+            verticalArrangement = Arrangement.Top,
+            modifier = modifier
+                .fillMaxSize()
+                .background(Background)
+                .padding(horizontal = 20.dp)
+        ) {
+            CommonSearchRow(Modifier.padding(top = 21.dp))
+            CommonCategoryRow(
+                modifier = Modifier.padding(top = 22.dp),
+                categories = state.category,
+                onClick = {
+                    navigator.push(SecondaryScreen(ScreenType.CATEGORY, categoryScreen = it, db = db))
+                },
+                color = { Block }
+            )
+            CommonPopularRow(
+                modifier = Modifier.padding(top = 24.dp),
+                shoesList = viewModel.shoesList,
+                onTextClick = {
+                    navigator.push(SecondaryScreen(ScreenType.POPULAR, db = db))
+                },
+                onAdd = {
+                },
+                onFavourite = {
+                    viewModel.inFavourite(shoes = it)
+                }
+            )
+            CommonSalesRow(
+                modifier = Modifier.padding(top = 29.dp),
+                onTextClick = {},
+                listSales = state.sales
+            )
+        }
     }
 }
