@@ -33,6 +33,14 @@ class HomeViewModel(private val db: AppDatabase): ScreenModel {
         getAllSales()
     }
 
+    fun inFavourite(shoes: Shoes){
+        screenModelScope.launch(Dispatchers.IO) {
+            val changeRecord = shoesList.indexOf(shoes)
+            shoesUseCase.inFavourite(shoes)
+            shoesList[changeRecord] = shoesList[changeRecord].copy(isFavourite = !shoes.isFavourite)
+        }
+    }
+
     private fun getAllCategory() {
         screenModelScope.launch {
             val result = categoryUseCase.getAllCategory()
@@ -66,7 +74,7 @@ class HomeViewModel(private val db: AppDatabase): ScreenModel {
         }
     }
     private fun getAllShoes() {
-        screenModelScope.launch {
+        screenModelScope.launch(Dispatchers.IO) {
             val result = shoesUseCase.getAllShoes()
             result.collect { response ->
                 when (response) {
@@ -79,13 +87,6 @@ class HomeViewModel(private val db: AppDatabase): ScreenModel {
                     is ResponseState.Loading -> {}
                 }
             }
-        }
-    }
-    fun inFavourite(shoes: Shoes){
-        screenModelScope.launch(Dispatchers.IO) {
-            val changeRecord = shoesList.indexOf(shoes)
-            shoesUseCase.inFavourite(shoes)
-            shoesList[changeRecord] = shoesList[changeRecord].copy(isFavourite = !shoes.isFavourite)
         }
     }
 }
