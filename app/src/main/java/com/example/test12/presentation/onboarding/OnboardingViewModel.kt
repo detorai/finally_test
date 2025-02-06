@@ -9,13 +9,5 @@ import kotlinx.coroutines.launch
 
 class OnboardingViewModel(private val db: AppDatabase): ScreenModel {
 
-    init{
-        screenModelScope.launch(Dispatchers.IO) {
-            val result = db.OnBoardingDao().getNumber()
-            if(result == 0){
-                db.OnBoardingDao().insert(Onboarding(number = 1))
-            }
-        }
 
-    }
 }

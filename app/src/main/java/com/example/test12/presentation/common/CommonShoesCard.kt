@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.test12.R
+import com.example.test12.domain.category.Category
 import com.example.test12.domain.shoes.Shoes
 import com.example.test12.presentation.ui.theme.Accent
 import com.example.test12.presentation.ui.theme.Background
@@ -35,11 +36,14 @@ fun CommonShoesCard(
     onAdd: ()-> Unit,
     onFavourite: ()-> Unit,
     shoes: Shoes,
+    onCardClick: (Shoes) -> Unit
 ){
     Box(
         modifier = Modifier
             .size(160.dp, 182.dp)
-            .background(color = Block, shape = RoundedCornerShape(16.dp)),
+            .background(color = Block, shape = RoundedCornerShape(16.dp))
+            .clickable { onCardClick(shoes) }
+        ,
         contentAlignment = Alignment.Center
     ){
         Box(

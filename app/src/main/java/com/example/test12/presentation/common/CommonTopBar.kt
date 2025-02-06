@@ -16,7 +16,6 @@ import com.example.test12.presentation.ui.theme.TextColor
 
 @Composable
 fun CommonTopBar(
-    modifier: Modifier,
     onBack: ()-> Unit,
     label: String,
     onFavourite: ()-> Unit = {},

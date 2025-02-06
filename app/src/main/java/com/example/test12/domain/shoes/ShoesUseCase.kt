@@ -17,6 +17,15 @@ class ShoesUseCase (private val db: AppDatabase) {
             val result = repository.getShoes().map{
                 it.toShoes()
             }
+            db.ShoesDao().getAllShoesInFavourite().forEach { favour ->
+                result.find { it.id == favour.shoesId }?.let { it.isFavourite = true }
+            }
+            db.ShoesDao().getAllShoesInBucket().forEach { bucket ->
+                result.find { it.id == bucket.shoesId }?.let {
+                    it.inBucket = true
+                    it.count = bucket.shoesCount
+                }
+            }
             if (db.ShoesDao().getAllShoes().isEmpty()) {
                 db.ShoesDao().insertAll(
                     *result.map {
@@ -37,18 +46,24 @@ class ShoesUseCase (private val db: AppDatabase) {
             emit(ResponseState.Error(e.message.toString()))
         }
     }
-
-    suspend fun getAllShoesLocal(){
-        db.ShoesDao().getAllShoes()
-    }
-
-    suspend fun getAllFavourite() {
-        db.ShoesDao().getAllShoesInFavourite()
-    }
-    suspend fun getAllBucket() {
-        db.ShoesDao().getAllShoesInFavourite()
-    }
     suspend fun inFavourite(shoes: Shoes){
         db.ShoesDao().changeInFavourite(shoesId = shoes.id)
     }
+    suspend fun inBucket(shoes: Shoes){
+        db.ShoesDao().changeInBucket(shoesId = shoes.id, count = 1)
+    }
+    suspend fun countPlus(shoes: Shoes){
+        db.ShoesDao().changeInBucket(shoesId = shoes.id, count = shoes.count + 1)
+    }
+    suspend fun countMinus(shoes: Shoes){
+        if (shoes.count <= 1) {
+            db.ShoesDao().changeInBucket(shoesId = shoes.id, count = 0)
+        } else {
+            db.ShoesDao().changeInBucket(shoesId = shoes.id, count = shoes.count - 1)
+        }
+    }
+    suspend fun deleteFromBucket(shoes: Shoes){
+        db.ShoesDao().changeInBucket(shoesId = shoes.id, count = 0)
+    }
+
 }

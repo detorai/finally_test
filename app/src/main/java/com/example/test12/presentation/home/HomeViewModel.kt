@@ -40,6 +40,13 @@ class HomeViewModel(private val db: AppDatabase): ScreenModel {
             shoesList[changeRecord] = shoesList[changeRecord].copy(isFavourite = !shoes.isFavourite)
         }
     }
+    fun inBucket(shoes: Shoes){
+        screenModelScope.launch(Dispatchers.IO) {
+            val changeRecord = shoesList.indexOf(shoes)
+            shoesUseCase.inBucket(shoes)
+            shoesList[changeRecord] = shoesList[changeRecord].copy(inBucket = !shoes.inBucket, count = shoes.count)
+        }
+    }
 
     private fun getAllCategory() {
         screenModelScope.launch {

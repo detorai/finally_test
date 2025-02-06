@@ -39,7 +39,8 @@ fun CommonShoesBucketCard(
     onDelete: ()-> Unit,
     onUp: ()-> Unit,
     onDown: ()-> Unit,
-    modifier: Modifier
+    modifier: Modifier,
+    onCardClick: (Shoes) -> Unit
 ){
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -97,6 +98,7 @@ fun CommonShoesBucketCard(
                 .fillMaxWidth(0.7f)
                 .height(104.dp)
                 .background(color = Block, shape = RoundedCornerShape(8.dp))
+                .clickable { onCardClick(shoes) }
         ) {
             Box(
                 contentAlignment = Alignment.Center,

@@ -29,7 +29,7 @@ interface ShoesDao {
     @Query("UPDATE ShoesEntity SET shoesCount =:count  WHERE shoesId =:shoesId")
     suspend fun changeInBucket(shoesId: Long, count: Int)
 
-    @Query("UPDATE ShoesEntity SET shoesCount =0  WHERE shoesCount > 0")
+    @Query("UPDATE ShoesEntity SET shoesCount = 0  WHERE shoesCount > 0")
     suspend fun resetBucket()
 
     @Query("SELECT * FROM ShoesEntity")

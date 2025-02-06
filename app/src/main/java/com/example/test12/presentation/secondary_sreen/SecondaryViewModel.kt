@@ -77,7 +77,15 @@ class SecondaryViewModel(type: ScreenType, categoryScreen: Category? = null, db:
         screenModelScope.launch(Dispatchers.IO) {
             val changeRecord = shoesList.indexOf(shoes)
             shoesUseCase.inFavourite(shoes)
-            shoesList[changeRecord] = shoesList[changeRecord].copy(isFavourite = !shoes.isFavourite)
+            shoesList[changeRecord] = shoesList[changeRecord].copy(isFavourite = false)
+            shoesList.removeAt(changeRecord)
+        }
+    }
+    fun inBucket(shoes: Shoes){
+        screenModelScope.launch(Dispatchers.IO) {
+            val changeRecord = shoesList.indexOf(shoes)
+            shoesUseCase.inBucket(shoes)
+            shoesList[changeRecord] = shoesList[changeRecord].copy(inBucket = !shoes.inBucket)
         }
     }
 
@@ -145,4 +153,5 @@ class SecondaryViewModel(type: ScreenType, categoryScreen: Category? = null, db:
             }
         }
     }
+
 }

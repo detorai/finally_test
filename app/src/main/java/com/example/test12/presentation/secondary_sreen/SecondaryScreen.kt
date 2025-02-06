@@ -26,11 +26,13 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.example.test12.data.local_data_source.AppDatabase
 import com.example.test12.domain.category.Category
+import com.example.test12.presentation.bucket.BucketScreen
 import com.example.test12.presentation.common.CommonBottomBar
 import com.example.test12.presentation.common.CommonCategoryRow
 import com.example.test12.presentation.common.CommonScaffold
 import com.example.test12.presentation.common.CommonShoesCard
 import com.example.test12.presentation.common.CommonTopBar
+import com.example.test12.presentation.details.DetailsScreen
 import com.example.test12.presentation.home.HomeScreen
 import com.example.test12.presentation.ui.theme.Accent
 import com.example.test12.presentation.ui.theme.Block
@@ -63,7 +65,6 @@ data class SecondaryScreen(
                     CommonTopBar(
                         onBack = { navigator.pop() },
                         label = state.label,
-                        modifier = Modifier,
                         onFavourite = {
                             viewModel.updateScreen(screen)
                             navigator.push(
@@ -85,7 +86,7 @@ data class SecondaryScreen(
             bottomBar = {
                 if (screen == ScreenType.FAVOURITE) {
                     CommonBottomBar(
-                        onClickBucket = {},
+                        onClickBucket = {navigator.push(BucketScreen(db))},
                         onClickFavour = {},
                         onClickHome = {navigator.push(HomeScreen(db))}
                     )
@@ -109,11 +110,13 @@ data class SecondaryScreen(
                             CommonShoesCard(
                                 shoes = shoes,
                                 onAdd = {
-                                    viewModel.inFavourite(shoes)
+                                    viewModel.inBucket(shoes)
                                 },
                                 onFavourite = {
                                     viewModel.inFavourite(shoes)
                                 },
+                                onCardClick = {navigator.push(DetailsScreen(db, it))}
+
                             )
                             if (index < viewModel.shoesList.size - 1) {
                                 Spacer(Modifier.width(15.dp))
