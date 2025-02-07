@@ -18,6 +18,7 @@ import com.example.test12.presentation.home.HomeScreen
 import com.example.test12.presentation.onboarding.OnboardingScreen
 import com.example.test12.presentation.onboarding.SplashScreen
 import com.example.test12.presentation.sign_in.SignInScreen
+import com.example.test12.presentation.sign_up.SignUpScreen
 import com.example.test12.presentation.ui.theme.Test12Theme
 
 class MainActivity : ComponentActivity() {
@@ -30,7 +31,7 @@ class MainActivity : ComponentActivity() {
         ).build()
         setContent {
             Test12Theme {
-                Navigator(OnboardingScreen(db))
+                Navigator(SignUpScreen(db))
             }
         }
     }

@@ -1,6 +1,8 @@
 package com.example.test12.data.remote_data_source
 
 import io.github.jan.supabase.auth.Auth
+import io.github.jan.supabase.auth.auth
+import io.github.jan.supabase.auth.user.UserInfo
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.postgrest.Postgrest
 
@@ -15,4 +17,5 @@ object SupabaseClient {
         install(Postgrest)
         install(Auth)
     }
+    val userInfo: UserInfo? = client.auth.currentUserOrNull()
 }

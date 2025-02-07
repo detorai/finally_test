@@ -1,4 +1,4 @@
-package com.example.test12.presentation.sign_in
+package com.example.test12.presentation.sign_up
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
@@ -9,11 +9,16 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class SignInViewModel: ScreenModel {
+class SignUpViewModel: ScreenModel {
+    val state = MutableStateFlow(SignUpScreenState())
+    val signUpUseCase = SignInUseCase()
 
-    val state = MutableStateFlow(SignInScreenState())
-    val singInUseCase = SignInUseCase()
 
+    fun onName(name: String){
+        state.update {
+            it.copy(name = name)
+        }
+    }
     fun onEmail(email: String){
         state.update {
             it.copy(email = email)
@@ -29,28 +34,15 @@ class SignInViewModel: ScreenModel {
             it.copy(passwordVisible = !it.passwordVisible)
         }
     }
+    fun onCheck(){
+        state.update {
+            it.copy(checkState = !it.checkState)
+        }
+    }
     fun resetError(){
         state.update {
-            it.copy(Error = null)
+            it.copy(error = null)
         }
-    }
-    fun checkEmailEmpty(email: String): Boolean{
-        if (email.isEmpty()){
-            state.update {
-                it.copy(Error = "Email is empty")
-            }
-            return false
-        }
-        return true
-    }
-    fun checkPasswordEmpty(password: String): Boolean{
-        if (password.isEmpty()){
-            state.update {
-                it.copy(Error = "Password is empty")
-            }
-            return false
-        }
-        return true
     }
     fun checkEmailPattern(email: String): Boolean{
         val pattern = "^[a-z0-9]+@[a-z0-9]+\\.[a-z]{3,}$"
@@ -58,28 +50,27 @@ class SignInViewModel: ScreenModel {
 
         if (!regex.matches(email)){
             state.update {
-                it.copy(Error = "Incorrect Email")
+                it.copy(error = "Incorrect Email")
             }
             return false
         }
         return true
     }
 
-    fun auth(email: String, password: String){
+
+    fun signUp(email: String, password: String){
         val authRequest = AuthRequest(
             email, password
         )
-        if (!checkEmailEmpty(authRequest.email)) return
-        if (!checkPasswordEmpty(authRequest.password)) return
-        if (!checkEmailPattern(authRequest.email)) return
-
+        if (!checkEmailPattern(email)) return
+        if (!state.value.checkState) return
         screenModelScope.launch {
-            val result = singInUseCase.auth(authRequest)
+            val result = signUpUseCase.signUp(authRequest)
             result.collect{response ->
                 when(response) {
                     is ResponseState.Error -> {
                         state.update {
-                            it.copy(Error = "Not Auth")
+                            it.copy(error = "Sign Up is fail")
                         }
                     }
                     is ResponseState.Loading -> {
@@ -89,7 +80,7 @@ class SignInViewModel: ScreenModel {
                     }
                     is ResponseState.Success<*> -> {
                         state.update {
-                            it.copy(isSignIn = true)
+                            it.copy(isSignUp = true)
                         }
                     }
                 }

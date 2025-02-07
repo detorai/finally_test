@@ -11,6 +11,7 @@ import com.example.test12.domain.sales.Sales
 import com.example.test12.domain.sales.SalesUseCase
 import com.example.test12.domain.shoes.Shoes
 import com.example.test12.domain.shoes.ShoesUseCase
+import com.example.test12.domain.sign_in.SignInUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
@@ -21,10 +22,16 @@ class HomeViewModel(private val db: AppDatabase): ScreenModel {
     val shoesUseCase = ShoesUseCase(db)
     val categoryUseCase = CategoryUseCase()
     val salesUseCase = SalesUseCase()
+    val userUseCase = SignInUseCase()
     val shoesList = mutableStateListOf<Shoes>()
 
     init{
         updateData()
+        screenModelScope.launch(Dispatchers.IO) {
+           if (userUseCase.userState().currentUserOrNull() != null){
+
+           }
+        }
     }
 
     fun updateData() {
@@ -32,6 +39,8 @@ class HomeViewModel(private val db: AppDatabase): ScreenModel {
         getAllShoes()
         getAllSales()
     }
+
+
 
     fun inFavourite(shoes: Shoes){
         screenModelScope.launch(Dispatchers.IO) {

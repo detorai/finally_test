@@ -2,6 +2,7 @@ package com.example.test12.domain.shoes
 
 import com.example.test12.data.local_data_source.AppDatabase
 import com.example.test12.data.local_data_source.ShoesEntity
+import com.example.test12.data.remote_data_source.SupabaseClient
 import com.example.test12.data.remote_data_source.shoes.ShoesRepository
 import com.example.test12.domain.common.ResponseState
 import com.example.test12.domain.common.toShoes
@@ -25,6 +26,9 @@ class ShoesUseCase (private val db: AppDatabase) {
                     it.inBucket = true
                     it.count = bucket.shoesCount
                 }
+            }
+            if(SupabaseClient.userInfo != null){
+
             }
             if (db.ShoesDao().getAllShoes().isEmpty()) {
                 db.ShoesDao().insertAll(
