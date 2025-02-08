@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -16,6 +17,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.example.test12.data.local_data_source.AppDatabase
+import com.example.test12.presentation.bucket.BucketScreen
 import com.example.test12.presentation.common.CommonBottomBar
 import com.example.test12.presentation.common.CommonCategoryRow
 import com.example.test12.presentation.common.CommonHomeTopBar
@@ -23,6 +25,7 @@ import com.example.test12.presentation.common.CommonPopularRow
 import com.example.test12.presentation.common.CommonSalesRow
 import com.example.test12.presentation.common.CommonScaffold
 import com.example.test12.presentation.common.CommonSearchRow
+import com.example.test12.presentation.details.DetailsScreen
 import com.example.test12.presentation.secondary_sreen.ScreenType
 import com.example.test12.presentation.secondary_sreen.SecondaryScreen
 import com.example.test12.presentation.ui.theme.Background
@@ -33,6 +36,9 @@ data class HomeScreen(private val db: AppDatabase): Screen {
     override fun Content() {
         val viewModel = rememberScreenModel { HomeViewModel(db) }
         val navigator = LocalNavigator.currentOrThrow
+        LaunchedEffect(Unit) {
+            viewModel.updateData()
+        }
         CommonScaffold(
             topBar = {
                 CommonHomeTopBar()
@@ -47,7 +53,9 @@ data class HomeScreen(private val db: AppDatabase): Screen {
             },
             bottomBar = {
                 CommonBottomBar(
-                    onClickBucket = {},
+                    onClickBucket = {
+                        navigator.push(BucketScreen(db))
+                    },
                     onClickFavour = {
                         navigator.push(SecondaryScreen(ScreenType.FAVOURITE, db = db))
                     },
@@ -88,10 +96,12 @@ data class HomeScreen(private val db: AppDatabase): Screen {
                     navigator.push(SecondaryScreen(ScreenType.POPULAR, db = db))
                 },
                 onAdd = {
+                    viewModel.inBucket(shoes = it)
                 },
                 onFavourite = {
                     viewModel.inFavourite(shoes = it)
-                }
+                },
+                onCardClick = {navigator.push(DetailsScreen(db, it))}
             )
             CommonSalesRow(
                 modifier = Modifier.padding(top = 29.dp),

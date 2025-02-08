@@ -39,5 +39,11 @@ val Typography = Typography(
         fontSize = 16.sp,
         lineHeight = 20.sp,
         color = TextColor
+    ),
+    displaySmall = TextStyle(
+        fontFamily = FontFamily(Font(R.font.new_peninim_font)),
+        fontWeight = FontWeight.W400,
+        fontSize = 16.sp,
+        lineHeight = 16.38.sp,
     )
 )

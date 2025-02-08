@@ -14,8 +14,5 @@ data class ShoesDto(
 
 @Serializable
 data class ShoesAndCat(
-    val shoes_id: Long,
-    val cat_id: Long,
-    val Shoes: ShoesDto,
-    val Category: CategoryDto
+    val shoes_id: Long
 )

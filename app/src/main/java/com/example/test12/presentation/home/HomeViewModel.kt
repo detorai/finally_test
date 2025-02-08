@@ -11,6 +11,7 @@ import com.example.test12.domain.sales.Sales
 import com.example.test12.domain.sales.SalesUseCase
 import com.example.test12.domain.shoes.Shoes
 import com.example.test12.domain.shoes.ShoesUseCase
+import com.example.test12.domain.sign_in.SignInUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
@@ -21,16 +22,39 @@ class HomeViewModel(private val db: AppDatabase): ScreenModel {
     val shoesUseCase = ShoesUseCase(db)
     val categoryUseCase = CategoryUseCase()
     val salesUseCase = SalesUseCase()
+    val userUseCase = SignInUseCase()
     val shoesList = mutableStateListOf<Shoes>()
 
     init{
         updateData()
+        screenModelScope.launch(Dispatchers.IO) {
+           if (userUseCase.userState().currentUserOrNull() != null){
+
+           }
+        }
     }
 
     fun updateData() {
         getAllCategory()
         getAllShoes()
         getAllSales()
+    }
+
+
+
+    fun inFavourite(shoes: Shoes){
+        screenModelScope.launch(Dispatchers.IO) {
+            val changeRecord = shoesList.indexOf(shoes)
+            shoesUseCase.inFavourite(shoes)
+            shoesList[changeRecord] = shoesList[changeRecord].copy(isFavourite = !shoes.isFavourite)
+        }
+    }
+    fun inBucket(shoes: Shoes){
+        screenModelScope.launch(Dispatchers.IO) {
+            val changeRecord = shoesList.indexOf(shoes)
+            shoesUseCase.inBucket(shoes)
+            shoesList[changeRecord] = shoesList[changeRecord].copy(inBucket = !shoes.inBucket, count = shoes.count)
+        }
     }
 
     private fun getAllCategory() {
@@ -66,7 +90,7 @@ class HomeViewModel(private val db: AppDatabase): ScreenModel {
         }
     }
     private fun getAllShoes() {
-        screenModelScope.launch {
+        screenModelScope.launch(Dispatchers.IO) {
             val result = shoesUseCase.getAllShoes()
             result.collect { response ->
                 when (response) {
@@ -79,13 +103,6 @@ class HomeViewModel(private val db: AppDatabase): ScreenModel {
                     is ResponseState.Loading -> {}
                 }
             }
-        }
-    }
-    fun inFavourite(shoes: Shoes){
-        screenModelScope.launch(Dispatchers.IO) {
-            val changeRecord = shoesList.indexOf(shoes)
-            shoesUseCase.inFavourite(shoes)
-            shoesList[changeRecord] = shoesList[changeRecord].copy(isFavourite = !shoes.isFavourite)
         }
     }
 }

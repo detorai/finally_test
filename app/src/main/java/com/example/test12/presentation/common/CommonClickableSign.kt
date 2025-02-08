@@ -9,14 +9,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.unit.sp
-import com.example.test12.R
 import com.example.test12.presentation.ui.theme.SubTextDark
 import com.example.test12.presentation.ui.theme.TextColor
+import com.example.test12.presentation.ui.theme.Typography
 
 @Composable
 fun CommonClickableSign(
@@ -29,9 +25,6 @@ fun CommonClickableSign(
         withStyle(
             SpanStyle(
                 color = SubTextDark,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.W400,
-                fontFamily = FontFamily(Font(R.font.new_peninim_font))
             )
         ){
             append(nonClickable)
@@ -40,9 +33,6 @@ fun CommonClickableSign(
         withStyle(
             SpanStyle(
                 color = TextColor,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.W400,
-                fontFamily = FontFamily(Font(R.font.new_peninim_font))
             )
         ){
             append(clickable)
@@ -56,6 +46,7 @@ fun CommonClickableSign(
     ) {
         ClickableText(
             text = annotatedText,
+            style = Typography.displaySmall,
             onClick = {offset ->
                 annotatedText.getStringAnnotations(offset,offset).firstOrNull()?.let { annotation ->
                     when (annotation.item) {

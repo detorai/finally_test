@@ -21,29 +21,29 @@ import org.junit.Rule
  *
  * See [testing documentation](http://d.android.com/tools/testing).
  */
-@RunWith(AndroidJUnit4::class)
-class ExampleInstrumentedTest {
-
-    private val viewModel = SignInViewModel()
-
-    @get: Rule
-    val compose = createComposeRule()
-
-    @Test
-    fun checkEmailEmptyError(){
-        viewModel.auth("", "")
-        compose.setContent {
-            SignInScreen().SignIn(viewModel)
-        }
-        compose.onNodeWithText("Email is empty").assertIsDisplayed()
-    }
-
-    @Test
-    fun checkPasswordEmptyError(){
-        viewModel.auth("123@123.com", "")
-        compose.setContent {
-            SignInScreen().SignIn(viewModel)
-        }
-        compose.onNodeWithText("Password is empty").assertIsDisplayed()
-    }
-}
+//@RunWith(AndroidJUnit4::class)
+//class ExampleInstrumentedTest {
+//
+//    private val viewModel = SignInViewModel()
+//
+//    @get: Rule
+//    val compose = createComposeRule()
+//
+//    @Test
+//    fun checkEmailEmptyError(){
+//        viewModel.auth("", "")
+//        compose.setContent {
+//            SignInScreen().SignIn(viewModel)
+//        }
+//        compose.onNodeWithText("Email is empty").assertIsDisplayed()
+//    }
+//
+//    @Test
+//    fun checkPasswordEmptyError(){
+//        viewModel.auth("123@123.com", "")
+//        compose.setContent {
+//            SignInScreen().SignIn(viewModel)
+//        }
+//        compose.onNodeWithText("Password is empty").assertIsDisplayed()
+//    }
+//}

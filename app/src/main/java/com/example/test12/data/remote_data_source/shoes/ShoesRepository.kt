@@ -1,28 +1,12 @@
 package com.example.test12.data.remote_data_source.shoes
 
 import com.example.test12.data.remote_data_source.SupabaseClient
+import com.example.test12.domain.shoes.Shoes
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.query.Columns
 
 class ShoesRepository {
-    val columns = Columns.raw(
-        """
-        shoes_id,
-        cat_id,
-        Shoes(
-        id,
-        shoes_name,
-        shoes_cost,
-        shoes_url,
-        shoes_description
-        ),
-        Category(
-        id,
-        category_name
-        )
-        """.trimIndent()
-    )
 
-    suspend fun getShoes() = SupabaseClient.client.from("ShoesAndCat").select(columns = columns).decodeList<ShoesAndCat>()
-
+    suspend fun getShoes() =
+        SupabaseClient.client.from("Shoes").select(columns = Columns.ALL).decodeList<ShoesDto>()
 }

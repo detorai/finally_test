@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 
 @Entity
 data class Onboarding(
-    @PrimaryKey val id: Long,
+    @PrimaryKey(autoGenerate = true) val id: Long = 0 ,
     val number: Int
 )
 

@@ -56,7 +56,7 @@ import com.example.test12.presentation.ui.theme.TextColor
 import kotlinx.coroutines.launch
 
 data class OnboardingScreen(
-    private val db: AppDatabase
+    private val db: AppDatabase,
 ): Screen {
     @Composable
     override fun Content() {
@@ -66,6 +66,7 @@ data class OnboardingScreen(
     @OptIn(ExperimentalFoundationApi::class)
     @Composable
     fun Onboarding(db: AppDatabase){
+
         val pagerState = rememberPagerState (pageCount = {3} )
         var visible by remember { mutableStateOf(true) }
         val coroutineScope = rememberCoroutineScope()

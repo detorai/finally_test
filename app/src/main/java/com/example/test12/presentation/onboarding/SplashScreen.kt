@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.Navigator
@@ -30,10 +31,12 @@ data class SplashScreen(
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
-        Splash(navigator, db)
+        val viewModel = rememberScreenModel { OnboardingViewModel(db) }
+        Splash(navigator, db, viewModel)
     }
     @Composable
-    fun Splash(navigator: Navigator, db: AppDatabase){
+    fun Splash(navigator: Navigator, db: AppDatabase, viewModel: OnboardingViewModel){
+
         LaunchedEffect(Unit){
             delay(3000)
             navigator.push(OnboardingScreen(db))

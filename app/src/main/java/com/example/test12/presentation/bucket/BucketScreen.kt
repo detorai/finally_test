@@ -23,6 +23,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.example.test12.data.local_data_source.AppDatabase
+import com.example.test12.presentation.common.CommonBucketBar
 import com.example.test12.presentation.common.CommonScaffold
 import com.example.test12.presentation.common.CommonShoesBucketCard
 import com.example.test12.presentation.common.CommonTopBar
@@ -34,20 +35,30 @@ data class BucketScreen(private val db: AppDatabase): Screen {
     override fun Content() {
         val viewModel = rememberScreenModel { BucketViewModel(db) }
         val navigator = LocalNavigator.currentOrThrow
+        val delivery = viewModel.delivery.doubleValue
         CommonScaffold(
             content = {
                 Bucket(
                     viewModel,
-                    it
+                    PaddingValues(top = 108.dp)
                 )
             },
             topBar = {
-                CommonTopBar(
-                    label = "Корзина",
-                    modifier = Modifier
-                        .padding(top = 48.dp)
-                        .background(Background),
-                    onBack = { navigator.pop()},
+                Column(
+                    modifier = Modifier.fillMaxWidth().padding(PaddingValues(top = 48.dp, start = 20.dp, end = 20.dp))
+                ){
+                    CommonTopBar(
+                        label = "Корзина",
+                        onBack = { navigator.pop() },
+                    )
+                }
+            },
+            bottomBar = {
+                CommonBucketBar(
+                    onClick = {},
+                    cost = viewModel.shoesList.sumOf { it.cost * it.count },
+                    delivery = delivery,
+                    sum = delivery + viewModel.shoesList.sumOf { it.cost * it.count }
                 )
             }
         )
@@ -61,7 +72,7 @@ data class BucketScreen(private val db: AppDatabase): Screen {
         Column(
             verticalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
-                .padding()
+                .padding(paddingValues)
                 .fillMaxSize()
                 .background(Background)
                 .padding(horizontal = 20.dp)
@@ -86,10 +97,11 @@ data class BucketScreen(private val db: AppDatabase): Screen {
                         ) {
                             CommonShoesBucketCard(
                                 shoes = shoes,
-                                onDown = { },
-                                onDelete = { },
-                                onUp = { },
-                                modifier = Modifier
+                                onDown = { viewModel.countMinus(shoes)},
+                                onDelete = { viewModel.deleteFromBucket(shoes)},
+                                onUp = { viewModel.countPlus(shoes)},
+                                modifier = Modifier,
+                                onCardClick = {}
                             )
                             if (index < viewModel.shoesList.size - 1) {
                                 Spacer(Modifier.height(14.dp))

@@ -1,5 +1,6 @@
 package com.example.test12.presentation.common
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -21,6 +22,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.test12.R
+import com.example.test12.presentation.ui.theme.Background
 import com.example.test12.presentation.ui.theme.TextColor
 
 @Composable
@@ -31,6 +33,7 @@ fun CommonHomeTopBar() {
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
+            .background(Background)
             .padding(top = 48.dp, start = 20.dp, end = 20.dp)
     ) {
         IconButton(
