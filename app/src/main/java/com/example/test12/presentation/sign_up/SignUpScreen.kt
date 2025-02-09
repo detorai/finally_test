@@ -2,12 +2,15 @@ package com.example.test12.presentation.sign_up
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -17,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
@@ -60,10 +64,25 @@ data class SignUpScreen(private val db: AppDatabase): Screen {
             verticalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier.fillMaxSize().background(Block).padding(horizontal = 20.dp)
         ) {
+            if (state.isLoading) {
+                Dialog(
+                    onDismissRequest = {}
+                ) {
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(200.dp)
+                            .background(Block, RoundedCornerShape(15.dp))
+                    ) {
+                        CircularProgressIndicator()
+                    }
+                }
+            }
             state.error?.let{
                 CommonDialogError(
                     onDismiss = viewModel::resetError,
-                    errorText = if (state.isSignUp) state.isSignUp.toString() else state.error!!
+                    errorText = it
                 )
             }
             Column(
@@ -129,7 +148,7 @@ data class SignUpScreen(private val db: AppDatabase): Screen {
                 CommonButton(
                     modifier = Modifier.padding(top = 30.dp),
                     onClick = {
-                        viewModel.signUp(state.email, state.password)
+                        viewModel.signUp(state.email, state.password, state.name)
                     },
                     text = "Зарегистрироваться",
                     textColor = Background,

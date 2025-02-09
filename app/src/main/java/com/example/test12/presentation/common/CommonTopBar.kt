@@ -10,7 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.example.test12.R
-import com.example.test12.presentation.secondary_sreen.ScreenType
+import com.example.test12.presentation.secondary_screen.ScreenType
 import com.example.test12.presentation.ui.theme.TextColor
 
 

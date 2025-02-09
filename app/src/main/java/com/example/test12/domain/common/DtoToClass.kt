@@ -10,5 +10,7 @@ fun ShoesDto.toShoes(): Shoes {
         cost = this.shoes_cost,
         description = this.shoes_description,
         image = this.shoes_url,
+        category = this.CategoryId,
+        isPopular = this.IsPopular
     )
 }

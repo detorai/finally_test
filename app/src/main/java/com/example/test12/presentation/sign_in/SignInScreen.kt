@@ -11,9 +11,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
-import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -44,6 +43,7 @@ import com.example.test12.presentation.common.CommonDialogError
 import com.example.test12.presentation.common.CommonSignLabel
 import com.example.test12.presentation.common.CommonTextField
 import com.example.test12.presentation.home.HomeScreen
+import com.example.test12.presentation.sign_up.SignUpScreen
 import com.example.test12.presentation.ui.theme.Accent
 import com.example.test12.presentation.ui.theme.Background
 import com.example.test12.presentation.ui.theme.Block
@@ -66,18 +66,38 @@ data class SignInScreen(private val db: AppDatabase): Screen {
         }
         Column(
             verticalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier.fillMaxSize().background(Block).padding(horizontal = 20.dp)
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Block)
+                .padding(horizontal = 20.dp)
         ) {
-            state.Error?.let {
+            if (state.isLoading) {
+                Dialog(
+                    onDismissRequest = {}
+                ) {
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(200.dp)
+                            .background(Block, RoundedCornerShape(15.dp))
+                    ) {
+                        CircularProgressIndicator()
+                    }
+                }
+            }
+            state.error?.let {
                 CommonDialogError(
                     onDismiss = viewModel::resetError,
-                    errorText = state.Error!!
+                    errorText = it
                 )
             }
             Column(
                 horizontalAlignment = Alignment.Start
             ) {
-                Row(modifier = Modifier.fillMaxWidth().padding(top = 66.dp)) {
+                Row(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 66.dp)) {
                     CommonButtonWithIcon(
                         modifier = Modifier.background(color = Block, shape = RoundedCornerShape(40.dp))
                         ,
@@ -118,7 +138,9 @@ data class SignInScreen(private val db: AppDatabase): Screen {
 
                 Row(
                     horizontalArrangement = Arrangement.End,
-                    modifier = Modifier.fillMaxWidth().padding(top = 16.dp)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 16.dp)
                 ) {
                     val annotatedText = buildAnnotatedString {
                         pushStringAnnotation("click", "click")
@@ -156,7 +178,7 @@ data class SignInScreen(private val db: AppDatabase): Screen {
             CommonClickableSign(
                 clickable = "Создать пользователя",
                 nonClickable = "Вы впервые?",
-                onClick = {},
+                onClick = {navigator.push(SignUpScreen(db))},
                 modifier = Modifier.padding(bottom = 50.dp)
             )
         }

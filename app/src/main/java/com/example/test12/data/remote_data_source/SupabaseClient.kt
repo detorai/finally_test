@@ -17,5 +17,5 @@ object SupabaseClient {
         install(Postgrest)
         install(Auth)
     }
-    val userInfo: UserInfo? = client.auth.currentUserOrNull()
+
 }

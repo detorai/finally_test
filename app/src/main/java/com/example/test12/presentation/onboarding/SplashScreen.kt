@@ -31,11 +31,10 @@ data class SplashScreen(
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
-        val viewModel = rememberScreenModel { OnboardingViewModel(db) }
-        Splash(navigator, db, viewModel)
+        Splash(navigator, db)
     }
     @Composable
-    fun Splash(navigator: Navigator, db: AppDatabase, viewModel: OnboardingViewModel){
+    fun Splash(navigator: Navigator, db: AppDatabase){
 
         LaunchedEffect(Unit){
             delay(3000)

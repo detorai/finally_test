@@ -3,16 +3,31 @@ package com.example.test12.presentation.sign_in
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.example.test12.domain.common.ResponseState
-import com.example.test12.domain.sign_in.SignInUseCase
+import com.example.test12.domain.sign_in.UserUseCase
 import com.example.test12.domain.sign_in.request.AuthRequest
+import io.github.jan.supabase.auth.status.SessionStatus
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class SignInViewModel: ScreenModel {
-
     val state = MutableStateFlow(SignInScreenState())
-    val singInUseCase = SignInUseCase()
+    val userUseCase = UserUseCase()
+
+    init {
+        screenModelScope.launch(Dispatchers.IO) {
+            userUseCase.userAuth.sessionStatus.collect{status ->
+                if(status is SessionStatus.Authenticated) {
+                    state.update {
+                        it.copy(isSignIn = true, isLoading = false)
+                    }
+                }
+            }
+        }
+    }
+
+
 
     fun onEmail(email: String){
         state.update {
@@ -31,13 +46,13 @@ class SignInViewModel: ScreenModel {
     }
     fun resetError(){
         state.update {
-            it.copy(Error = null)
+            it.copy(error = null)
         }
     }
     fun checkEmailEmpty(email: String): Boolean{
         if (email.isEmpty()){
             state.update {
-                it.copy(Error = "Email is empty")
+                it.copy(error = "Email is empty")
             }
             return false
         }
@@ -46,7 +61,7 @@ class SignInViewModel: ScreenModel {
     fun checkPasswordEmpty(password: String): Boolean{
         if (password.isEmpty()){
             state.update {
-                it.copy(Error = "Password is empty")
+                it.copy(error = "Password is empty")
             }
             return false
         }
@@ -58,7 +73,7 @@ class SignInViewModel: ScreenModel {
 
         if (!regex.matches(email)){
             state.update {
-                it.copy(Error = "Incorrect Email")
+                it.copy(error = "Incorrect Email")
             }
             return false
         }
@@ -74,22 +89,19 @@ class SignInViewModel: ScreenModel {
         if (!checkEmailPattern(authRequest.email)) return
 
         screenModelScope.launch {
-            val result = singInUseCase.auth(authRequest)
+            val result = userUseCase.auth(authRequest)
             result.collect{response ->
-                when(response) {
+                when (response) {
+                    is ResponseState.Success<*> -> {
+                    }
                     is ResponseState.Error -> {
                         state.update {
-                            it.copy(Error = "Not Auth")
+                            it.copy(error = response.error, isLoading = false)
                         }
                     }
                     is ResponseState.Loading -> {
                         state.update {
                             it.copy(isLoading = true)
-                        }
-                    }
-                    is ResponseState.Success<*> -> {
-                        state.update {
-                            it.copy(isSignIn = true)
                         }
                     }
                 }

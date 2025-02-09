@@ -1,6 +1,8 @@
-package com.example.test12.presentation.secondary_sreen
+package com.example.test12.presentation.secondary_screen
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -13,13 +15,16 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.key
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
@@ -29,6 +34,7 @@ import com.example.test12.domain.category.Category
 import com.example.test12.presentation.bucket.BucketScreen
 import com.example.test12.presentation.common.CommonBottomBar
 import com.example.test12.presentation.common.CommonCategoryRow
+import com.example.test12.presentation.common.CommonDialogError
 import com.example.test12.presentation.common.CommonScaffold
 import com.example.test12.presentation.common.CommonShoesCard
 import com.example.test12.presentation.common.CommonTopBar
@@ -60,7 +66,10 @@ data class SecondaryScreen(
         CommonScaffold(
             topBar = {
                 Column(
-                    Modifier.fillMaxWidth().padding(horizontal = 20.dp).padding(top = 48.dp)
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp)
+                        .padding(top = 48.dp)
                 ) {
                     CommonTopBar(
                         onBack = { navigator.pop() },
@@ -93,33 +102,56 @@ data class SecondaryScreen(
                 }
             },
             content = {
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(2),
-                    modifier = Modifier
-                        .padding(PaddingValues(horizontal = 20.dp))
-                        .padding(top = if (screen == ScreenType.CATEGORY) 203.dp else 112.dp)
-                        .fillMaxSize()
-                        .height(182.dp),
-                    contentPadding = PaddingValues(vertical = 15.dp),
-                    verticalArrangement = Arrangement.spacedBy(15.dp)
-                ) {
-                    itemsIndexed(viewModel.shoesList) { index, shoes ->
-                        Row(
-                            modifier = Modifier.fillMaxWidth()
+                Column {
+                    if (state.isLoading) {
+                        Dialog(
+                            onDismissRequest = {}
                         ) {
-                            CommonShoesCard(
-                                shoes = shoes,
-                                onAdd = {
-                                    viewModel.inBucket(shoes)
-                                },
-                                onFavourite = {
-                                    viewModel.inFavourite(shoes)
-                                },
-                                onCardClick = {navigator.push(DetailsScreen(db, it))}
+                            Box(
+                                contentAlignment = Alignment.Center,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(200.dp)
+                                    .background(Block, RoundedCornerShape(15.dp))
+                            ) {
+                                CircularProgressIndicator()
+                            }
+                        }
+                    }
+                    state.error?.let {
+                        CommonDialogError(
+                            onDismiss = viewModel::resetError,
+                            errorText = it
+                        )
+                    }
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(2),
+                        modifier = Modifier
+                            .padding(PaddingValues(horizontal = 20.dp))
+                            .padding(top = if (screen == ScreenType.CATEGORY) 203.dp else 112.dp)
+                            .fillMaxSize()
+                            .height(182.dp),
+                        contentPadding = PaddingValues(vertical = 15.dp),
+                        verticalArrangement = Arrangement.spacedBy(15.dp)
+                    ) {
+                        itemsIndexed(viewModel.shoesList) { index, shoes ->
+                            Row(
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                CommonShoesCard(
+                                    shoes = shoes,
+                                    onAdd = {
+                                        viewModel.inBucket(shoes)
+                                    },
+                                    onFavourite = {
+                                        viewModel.inFavourite(shoes)
+                                    },
+                                    onCardClick = { navigator.push(DetailsScreen(db, it)) }
 
-                            )
-                            if (index < viewModel.shoesList.size - 1) {
-                                Spacer(Modifier.width(15.dp))
+                                )
+                                if (index < viewModel.shoesList.size - 1) {
+                                    Spacer(Modifier.width(15.dp))
+                                }
                             }
                         }
                     }

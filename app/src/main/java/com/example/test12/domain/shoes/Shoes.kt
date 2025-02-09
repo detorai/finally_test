@@ -6,10 +6,11 @@ data class Shoes(
     val id: Long,
     val name: String,
     val cost: Double,
-    val category: List<Category> = emptyList(),
+    val category: Long,
     val description: String,
     val image: String,
     var count: Int = 0,
+    val isPopular: Boolean,
     var inBucket: Boolean = false,
     var isFavourite: Boolean = false
 )

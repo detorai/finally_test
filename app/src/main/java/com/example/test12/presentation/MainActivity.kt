@@ -27,11 +27,11 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         val db = Room.databaseBuilder(
             applicationContext,
-            AppDatabase::class.java, "MatuleDatabase2"
+            AppDatabase::class.java, "MatuleDatabase3"
         ).build()
         setContent {
             Test12Theme {
-                Navigator(SignUpScreen(db))
+                Navigator(SignInScreen(db))
             }
         }
     }

@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -60,6 +61,28 @@ class ForgotPasswordScreen: Screen {
             verticalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier.fillMaxSize().background(Block).padding(horizontal = 20.dp)
         ) {
+            if (state.isLoading) {
+                Dialog(
+                    onDismissRequest = {}
+                ) {
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(200.dp)
+                            .background(Block, RoundedCornerShape(15.dp))
+                    ) {
+                        CircularProgressIndicator()
+                    }
+                }
+            }
+            state.error?.let {
+                CommonDialogError(
+                    onDismiss = viewModel::resetError,
+                    errorText = it
+                )
+            }
+
             if (state.success) {
                 Dialog(
                     onDismissRequest = {navigator.push(OTPScreen(state.email))}

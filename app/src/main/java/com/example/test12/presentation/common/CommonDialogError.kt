@@ -4,6 +4,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,7 +25,7 @@ fun CommonDialogError(
     ) {
         Box(
             contentAlignment = Alignment.Center,
-            modifier = Modifier.fillMaxWidth().height(200.dp).background(Block, RoundedCornerShape(15.dp))
+            modifier = Modifier.fillMaxWidth().wrapContentHeight().background(Block, RoundedCornerShape(15.dp)).padding(10.dp)
         ){
             Text(
                 errorText

@@ -3,14 +3,17 @@ package com.example.test12.presentation.change_password
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.example.test12.domain.common.ResponseState
-import com.example.test12.domain.sign_in.SignInUseCase
+import com.example.test12.domain.sign_in.UserUseCase
+import io.github.jan.supabase.auth.status.SessionStatus
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class ForgotPasswordViewModel: ScreenModel {
     val state = MutableStateFlow(ForgotPasswordScreenState())
-    val forgotPassUseCase = SignInUseCase()
+    val userUseCase = UserUseCase()
+
 
     fun onEmail(email: String){
         state.update {
@@ -25,12 +28,12 @@ class ForgotPasswordViewModel: ScreenModel {
 
     fun resetPassword(email: String){
         screenModelScope.launch {
-            val result = forgotPassUseCase.resetPassword(email)
+            val result = userUseCase.resetPassword(email)
             result.collect{response ->
                 when(response) {
                     is ResponseState.Error -> {
                         state.update {
-                            it.copy(error = "")
+                            it.copy(error = response.error, isLoading = false)
                         }
                     }
                     is ResponseState.Loading -> {

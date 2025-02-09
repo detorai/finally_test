@@ -3,15 +3,18 @@ package com.example.test12.presentation.sign_up
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.example.test12.domain.common.ResponseState
-import com.example.test12.domain.sign_in.SignInUseCase
+import com.example.test12.domain.sign_in.UserUseCase
 import com.example.test12.domain.sign_in.request.AuthRequest
+import com.example.test12.domain.sign_in.request.RegisterRequest
+import io.github.jan.supabase.auth.status.SessionStatus
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class SignUpViewModel: ScreenModel {
     val state = MutableStateFlow(SignUpScreenState())
-    val signUpUseCase = SignInUseCase()
+    val userUseCase = UserUseCase()
 
 
     fun onName(name: String){
@@ -44,7 +47,7 @@ class SignUpViewModel: ScreenModel {
             it.copy(error = null)
         }
     }
-    fun checkEmailPattern(email: String): Boolean{
+    private fun checkEmailPattern(email: String): Boolean{
         val pattern = "^[a-z0-9]+@[a-z0-9]+\\.[a-z]{3,}$"
         val regex = Regex(pattern)
 
@@ -58,19 +61,19 @@ class SignUpViewModel: ScreenModel {
     }
 
 
-    fun signUp(email: String, password: String){
-        val authRequest = AuthRequest(
-            email, password
+    fun signUp(email: String, password: String, name: String){
+        val registerRequest = RegisterRequest(
+            email, password, name
         )
         if (!checkEmailPattern(email)) return
         if (!state.value.checkState) return
         screenModelScope.launch {
-            val result = signUpUseCase.signUp(authRequest)
+            val result = userUseCase.signUp(registerRequest)
             result.collect{response ->
                 when(response) {
                     is ResponseState.Error -> {
                         state.update {
-                            it.copy(error = "Sign Up is fail")
+                            it.copy(error = response.error, isLoading = false)
                         }
                     }
                     is ResponseState.Loading -> {
