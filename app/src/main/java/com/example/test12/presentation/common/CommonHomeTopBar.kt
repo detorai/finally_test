@@ -26,7 +26,9 @@ import com.example.test12.presentation.ui.theme.Background
 import com.example.test12.presentation.ui.theme.TextColor
 
 @Composable
-fun CommonHomeTopBar() {
+fun CommonHomeTopBar(
+    onSideMenu: ()-> Unit
+) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -37,7 +39,9 @@ fun CommonHomeTopBar() {
             .padding(top = 48.dp, start = 20.dp, end = 20.dp)
     ) {
         IconButton(
-            onClick = { }
+            onClick = {
+                onSideMenu()
+            }
         ) {
             Icon(
                 imageVector = ImageVector.vectorResource(R.drawable.hamburger),

@@ -27,7 +27,9 @@ import com.example.test12.presentation.ui.theme.Block
 fun CommonBottomBar(
     onClickFavour:()-> Unit ,
     onClickBucket:()-> Unit ,
-    onClickHome: () -> Unit
+    onClickHome: () -> Unit,
+    onClickProfile: () -> Unit,
+    onClickNotif: () -> Unit,
 ){
     val navigationList = listOf(R.drawable.home_navigation, R.drawable.heart,R.drawable.bag_splash , R.drawable.notif, R.drawable.profile)
     NavigationBar(
@@ -69,7 +71,8 @@ fun CommonBottomBar(
                     when (index) {
                         0 -> {onClickHome()}
                         1 -> {onClickFavour()}
-                        3 -> {}
+                        3 -> {onClickNotif()}
+                        4 -> {onClickProfile()}
                     }
                 },
                 icon = {

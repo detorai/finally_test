@@ -62,7 +62,12 @@ data class SignInScreen(private val db: AppDatabase): Screen {
         val state = viewModel.state.collectAsState().value
         val navigator = LocalNavigator.currentOrThrow
         LaunchedEffect(state.isSignIn) {
-            if (state.isSignIn) navigator.push(HomeScreen(db))
+
+            if (state.isSignIn) {
+                state.isSignIn = false
+                navigator.push(HomeScreen(db))
+            }
+
         }
         Column(
             verticalArrangement = Arrangement.SpaceBetween,

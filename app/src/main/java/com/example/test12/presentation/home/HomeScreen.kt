@@ -11,9 +11,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -33,46 +36,82 @@ import com.example.test12.presentation.common.CommonPopularRow
 import com.example.test12.presentation.common.CommonSalesRow
 import com.example.test12.presentation.common.CommonScaffold
 import com.example.test12.presentation.common.CommonSearchRow
+import com.example.test12.presentation.common.CommonSideMenu
 import com.example.test12.presentation.details.DetailsScreen
+import com.example.test12.presentation.notification.NotificationScreen
+import com.example.test12.presentation.profile.ProfileScreen
 import com.example.test12.presentation.secondary_screen.ScreenType
 import com.example.test12.presentation.secondary_screen.SecondaryScreen
+import com.example.test12.presentation.sign_up.SignUpScreen
 import com.example.test12.presentation.ui.theme.Background
 import com.example.test12.presentation.ui.theme.Block
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 data class HomeScreen(private val db: AppDatabase): Screen {
     @Composable
     override fun Content() {
         val viewModel = rememberScreenModel { HomeViewModel(db) }
         val navigator = LocalNavigator.currentOrThrow
+        val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+        val scope = rememberCoroutineScope()
+
         LaunchedEffect(Unit) {
             viewModel.updateData()
         }
-        CommonScaffold(
-            topBar = {
-                CommonHomeTopBar()
+        CommonSideMenu(
+            profilePhoto = "",
+            navigator = navigator,
+            userName = "123",
+            signOut = {
+                scope.launch {
+                    drawerState.close()
+                }
+                viewModel.signOut()
+                navigator.push(SignUpScreen(db))
             },
+            db = db,
+            drawState = drawerState,
             content = {
-                Home(
-                    navigator = navigator,
-                    viewModel = viewModel,
-                    db = db,
-                    modifier = Modifier.padding(PaddingValues(top = 111.dp))
-                    )
-            },
-            bottomBar = {
-                CommonBottomBar(
-                    onClickBucket = {
-                        navigator.push(BucketScreen(db))
+                CommonScaffold(
+                    topBar = {
+                        CommonHomeTopBar(
+                            onSideMenu = {
+                                scope.launch {
+                                    if (drawerState.isClosed) {
+                                        drawerState.open()
+                                    } else {
+                                        drawerState.close()
+                                    }
+                                }
+                            }
+                        )
                     },
-                    onClickFavour = {
-                        navigator.push(SecondaryScreen(ScreenType.FAVOURITE, db = db))
+                    content = {
+                        Home(
+                            navigator = navigator,
+                            viewModel = viewModel,
+                            db = db,
+                            modifier = Modifier.padding(PaddingValues(top = 111.dp))
+                        )
                     },
-                    onClickHome = {}
+                    bottomBar = {
+                        CommonBottomBar(
+                            onClickBucket = {
+                                navigator.push(BucketScreen(db))
+                            },
+                            onClickFavour = {
+                                navigator.push(SecondaryScreen(ScreenType.FAVOURITE, db = db))
+                            },
+                            onClickHome = {},
+                            onClickProfile = {navigator.push(ProfileScreen(db))},
+                            onClickNotif = {navigator.push(NotificationScreen(db))}
+                        )
+                    }
                 )
             }
         )
     }
-
     @Composable
     fun Home(
         navigator: Navigator,

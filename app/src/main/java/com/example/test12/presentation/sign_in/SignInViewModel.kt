@@ -68,7 +68,7 @@ class SignInViewModel: ScreenModel {
         return true
     }
     fun checkEmailPattern(email: String): Boolean{
-        val pattern = "^[a-z0-9]+@[a-z0-9]+\\.[a-z]{3,}$"
+        val pattern = "^[a-z0-9]+@[a-z0-9-]+\\.[a-z]{2,}$"
         val regex = Regex(pattern)
 
         if (!regex.matches(email)){

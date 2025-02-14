@@ -16,15 +16,23 @@ class ShoesUseCase (private val db: AppDatabase) {
     val repository = ShoesRepository()
 
 
+
     suspend fun getShoes() = flow<ResponseState> {
         return@flow try {
             emit(ResponseState.Loading())
+
             val result = repository.getShoes().map {
-                it.toShoes()
+                it.toShoes().copy(
+                    image = repository.getImages(it.shoes_url)
+                )
+
+
             }
             userInfo?.let {
                 repository.getFavourite(it.id).forEach{favour ->
-                    result.find { it.id == favour.shoes_id }?.let { it.isFavourite = true }
+                    result.find { it.id == favour.shoes_id }?.let {
+                        it.isFavourite = true
+                    }
                 }
                 repository.getBucket(it.id).forEach { bucket ->
                     result.find { it.id == bucket.shoes_id }?.let {
@@ -80,7 +88,9 @@ class ShoesUseCase (private val db: AppDatabase) {
             emit(ResponseState.Loading())
 
             val result = repository.getPopular().map {
-                it.toShoes()
+                it.toShoes().copy(
+                    image = repository.getImages(it.shoes_url)
+                )
             }
             emit(ResponseState.Success(result))
         } catch (e: Exception){

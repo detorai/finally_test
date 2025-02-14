@@ -15,8 +15,11 @@ import androidx.room.Room
 import cafe.adriel.voyager.navigator.Navigator
 import com.example.test12.data.local_data_source.AppDatabase
 import com.example.test12.presentation.home.HomeScreen
+import com.example.test12.presentation.notification.NotificationScreen
 import com.example.test12.presentation.onboarding.OnboardingScreen
 import com.example.test12.presentation.onboarding.SplashScreen
+import com.example.test12.presentation.orders.OrdersScreen
+import com.example.test12.presentation.profile.ProfileScreen
 import com.example.test12.presentation.sign_in.SignInScreen
 import com.example.test12.presentation.sign_up.SignUpScreen
 import com.example.test12.presentation.ui.theme.Test12Theme

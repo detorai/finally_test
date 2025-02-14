@@ -20,24 +20,29 @@ data class ShoesEntity(
 
 @Dao
 interface ShoesDao {
+
+    //All
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(vararg shoes: ShoesEntity)
-
-    @Query("UPDATE ShoesEntity SET shoesInFavourite = NOT shoesInFavourite WHERE shoesId =:shoesId")
-    suspend fun changeInFavourite(shoesId: Long)
-
-    @Query("UPDATE ShoesEntity SET shoesCount =:count  WHERE shoesId =:shoesId")
-    suspend fun changeInBucket(shoesId: Long, count: Int)
-
-    @Query("UPDATE ShoesEntity SET shoesCount = 0  WHERE shoesCount > 0")
-    suspend fun resetBucket()
 
     @Query("SELECT * FROM ShoesEntity")
     suspend fun getAllShoes(): List<ShoesEntity>
 
+
+
+    //Favourite
+    @Query("UPDATE ShoesEntity SET shoesInFavourite = NOT shoesInFavourite WHERE shoesId =:shoesId")
+    suspend fun changeInFavourite(shoesId: Long)
+
     @Query("SELECT * FROM ShoesEntity WHERE shoesInFavourite")
     suspend fun getAllShoesInFavourite(): List<ShoesEntity>
 
+
+
+    //Bucket
     @Query("SELECT * FROM ShoesEntity WHERE shoesCount > 0")
     suspend fun getAllShoesInBucket(): List<ShoesEntity>
+
+    @Query("UPDATE ShoesEntity SET shoesCount =:count  WHERE shoesId =:shoesId")
+    suspend fun changeInBucket(shoesId: Long, count: Int)
 }

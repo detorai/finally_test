@@ -40,6 +40,8 @@ import com.example.test12.presentation.common.CommonShoesCard
 import com.example.test12.presentation.common.CommonTopBar
 import com.example.test12.presentation.details.DetailsScreen
 import com.example.test12.presentation.home.HomeScreen
+import com.example.test12.presentation.notification.NotificationScreen
+import com.example.test12.presentation.profile.ProfileScreen
 import com.example.test12.presentation.ui.theme.Accent
 import com.example.test12.presentation.ui.theme.Block
 
@@ -97,7 +99,9 @@ data class SecondaryScreen(
                     CommonBottomBar(
                         onClickBucket = {navigator.push(BucketScreen(db))},
                         onClickFavour = {},
-                        onClickHome = {navigator.push(HomeScreen(db))}
+                        onClickHome = {navigator.push(HomeScreen(db))},
+                        onClickProfile = {navigator.push(ProfileScreen(db))},
+                        onClickNotif = {navigator.push(NotificationScreen(db))}
                     )
                 }
             },

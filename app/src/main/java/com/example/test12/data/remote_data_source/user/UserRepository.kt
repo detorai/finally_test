@@ -4,6 +4,7 @@ import com.example.test12.data.remote_data_source.SupabaseClient
 import com.example.test12.domain.sign_in.request.AuthRequest
 import com.example.test12.domain.sign_in.request.RegisterRequest
 import io.github.jan.supabase.auth.OtpType
+import io.github.jan.supabase.auth.SignOutScope
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.auth.providers.builtin.Email
 import io.github.jan.supabase.auth.user.UserInfo
@@ -53,5 +54,8 @@ class UserRepository {
 
     suspend fun resendOTP(email: String) {
         SupabaseClient.client.auth.resendEmail(OtpType.Email.EMAIL, email)
+    }
+    suspend fun signOut(){
+        SupabaseClient.client.auth.signOut(SignOutScope.GLOBAL)
     }
 }

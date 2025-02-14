@@ -8,7 +8,7 @@ data class Shoes(
     val cost: Double,
     val category: Long,
     val description: String,
-    val image: String,
+    var image: String,
     var count: Int = 0,
     val isPopular: Boolean,
     var inBucket: Boolean = false,

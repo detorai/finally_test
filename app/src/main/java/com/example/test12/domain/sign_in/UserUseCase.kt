@@ -58,4 +58,13 @@ class UserUseCase {
             emit(ResponseState.Error(e.message.toString()))
         }
     }
+    suspend fun signOut()= flow<ResponseState>{
+        return@flow try {
+            emit(ResponseState.Loading())
+            val result = repository.signOut()
+            emit(ResponseState.Success(true))
+        } catch (e: Exception) {
+            emit(ResponseState.Error(e.message.toString()))
+        }
+    }
 }

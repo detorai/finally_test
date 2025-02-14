@@ -25,7 +25,6 @@ class HomeViewModel(private val db: AppDatabase): ScreenModel {
     val userUseCase = UserUseCase()
     val shoesUseCase = ShoesUseCase(db)
 
-
     init{
         screenModelScope.launch {
             shoesUseCase.userInfo = userUseCase.getProfile()
@@ -159,6 +158,30 @@ class HomeViewModel(private val db: AppDatabase): ScreenModel {
                         }
                     }
 
+                    is ResponseState.Error -> {
+                        state.update {
+                            it.copy(error = response.error, isLoading = false)
+                        }
+                    }
+                    is ResponseState.Loading -> {
+                        state.update {
+                            it.copy(isLoading = true)
+                        }
+                    }
+                }
+            }
+        }
+    }
+    fun signOut(){
+        screenModelScope.launch {
+            val result = userUseCase.signOut()
+            result.collect{response ->
+                when (response) {
+                    is ResponseState.Success<*> -> {
+                        state.update {
+                            it.copy(isLoading = false)
+                        }
+                    }
                     is ResponseState.Error -> {
                         state.update {
                             it.copy(error = response.error, isLoading = false)

@@ -1,10 +1,16 @@
 package com.example.test12.data.remote_data_source.shoes
 
+import androidx.compose.ui.unit.dp
 import com.example.test12.data.remote_data_source.SupabaseClient
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.query.Columns
+import io.github.jan.supabase.storage.storage
+import kotlin.time.Duration.Companion.minutes
 
 class ShoesRepository {
+
+    suspend fun getImages(image_name: String) =
+        SupabaseClient.client.storage.from("images").publicUrl(image_name)
 
     suspend fun getShoes() =
         SupabaseClient.client.from("Shoes").select(columns = Columns.ALL).decodeList<ShoesDto>()
